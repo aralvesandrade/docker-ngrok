@@ -7,7 +7,6 @@ docker volume create sonarqube_data
 docker volume create sonarqube_extensions
 docker volume create sonarqube_logs
 docker volume create mysql_data
-docker volume create nginx
 ```
 
 Criar rede
@@ -25,7 +24,22 @@ docker run -d --name sonarqube --network minha-rede -p 9000:9000 -e SONAR_JDBC_U
 
 docker run -d --name mysql --network minha-rede -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=test -e MYSQL_USER=test -e MYSQL_PASSWORD=test -e TZ=America/Sao_Paulo -p 3306:3306 --restart=always -v mysql_data:/var/lib/mysql mysql:8.0
 
+docker run -d --name grafana --network minha-rede -p 3000:3000 --restart=always grafana/grafana-oss
+
 docker run -d --name nginx --network minha-rede -e TZ=America/Sao_Paulo -p 8080:80 --restart=always -v /nginxconf/nginx.conf:/etc/nginx/conf.d nginx
+
+docker run -d --name nginx --network minha-rede -p 8080:80 --restart=always -v /home/alexandre/nginxcfg:/etc/nginx/conf.d nginx
+```
+
+Na pasta /home/alexandre/nginxcfg está o arquivo nginx.conf
+
+Atualizar nginx, caso o arquivo seja alterado, executar o comando
+
+```
+docker exec -it nginx bash
+nginx -t && nginx -s reload
+#ou
+docker exec -it nginx /bin/sh -c "nginx -t && nginx -s reload"
 ```
 
 Acessar determinado container
@@ -53,18 +67,18 @@ select * from people;
 Configura o ngrok no domain criado no dash, exportando a porta 9000, que está configurado para sonarqube
 
 ```
-ngrok http --domain=pro-chow-solely.ngrok-free.app 9000
+ngrok http --domain={ngrok_domain} 9000
 ```
 
 Criar arquivo de configuração do ngrok, para que o mesmo seja iniciado junto com Linux
 
 ```yaml
 version: 2
-authtoken: {token}
+authtoken: { token }
 tunnels:
   your_tunnel_name:
     proto: http
-    hostname: pro-chow-solely.ngrok-free.app
+    hostname: { ngrok_domain }
     addr: 127.0.0.1:9000
 ```
 
@@ -72,4 +86,16 @@ Instalando o ngrok como um serviço do Linux
 
 ```
 sudo ngrok service install --config ngrok/ngrok.yaml
+```
+
+Cenário mais simples, postado no fórum do FullCycle
+
+```
+docker network create minha-rede
+
+docker run -d --name sonarqube --network minha-rede -p 9000:9000 sonarqube
+
+docker run -d --name grafana --network minha-rede -p 3000:3000 grafana/grafana-oss
+
+docker run -d --name nginx --network minha-rede -p 8080:80 -v /home/alexandre/nginxcfg:/etc/nginx/conf.d nginx
 ```
