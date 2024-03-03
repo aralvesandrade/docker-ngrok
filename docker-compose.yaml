@@ -105,6 +105,7 @@ services:
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
+    restart: unless-stopped
     volumes:
       - prometheus:/etc/prometheus
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
@@ -114,6 +115,7 @@ services:
   postgres_exporter:
     image: wrouesnel/postgres_exporter:latest
     container_name: postgres_exporter
+    restart: unless-stopped
     environment:
       - DATA_SOURCE_NAME=postgresql://sonar:sonar@postgres:5432/?sslmode=disable
     volumes:
@@ -127,6 +129,7 @@ services:
   node_exporter:
     image: prom/node-exporter:latest
     container_name: node_exporter
+    restart: unless-stopped
     volumes:
       - /:/rootfs:ro
       - /proc:/host/proc:ro
