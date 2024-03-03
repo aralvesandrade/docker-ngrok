@@ -9,6 +9,12 @@ volumes:
   sonarqube_data:
   sonarqube_extensions:
   sonarqube_logs:
+  grafana_data:
+  grafana_log:
+  grafana_plugins:
+  grafana_provisioning:
+  prometheus:
+  postgres_exporter_data:
 
 services:
   postgres:
@@ -71,6 +77,11 @@ services:
       - GF_SERVER_ROOT_URL=http://localhost:8080/grafana/
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
       - TZ=America/Sao_Paulo
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - grafana_log:/var/log/grafana
+      - grafana_plugins:/var/lib/grafana/plugins
+      - grafana_provisioning:/etc/grafana/provisioning
     networks:
       - my-network
 
@@ -88,5 +99,37 @@ services:
     ports:
       - 8080:80
       - 443:443
+    networks:
+      - my-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - prometheus:/etc/prometheus
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - my-network
+
+  postgres_exporter:
+    image: wrouesnel/postgres_exporter:latest
+    container_name: postgres_exporter
+    environment:
+      - DATA_SOURCE_NAME=postgresql://sonar:sonar@postgres:5432/?sslmode=disable
+    volumes:
+      - postgres_exporter_data:/var/lib/postgres_exporter
+    networks:
+      - my-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  node_exporter:
+    image: prom/node-exporter:latest
+    container_name: node_exporter
+    volumes:
+      - /:/rootfs:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
     networks:
       - my-network

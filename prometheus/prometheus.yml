@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: "prometheus"
+    scrape_interval: 5s
+
+    static_configs:
+      # prometheus
+      - targets: ["prometheus:9090"]
+      # node_exporter
+      - targets: ["node_exporter:9100"]
+      # cadvisor
+      - targets: ["cadvisor:8080"]
+      # postgres_exporter
+      - targets: ["postgres_exporter:9187"]
