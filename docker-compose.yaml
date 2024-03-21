@@ -106,11 +106,26 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus
     restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --web.external-url=http://localhost/prometheus/
     volumes:
       - prometheus:/etc/prometheus
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
     networks:
       - my-network
+
+  nginx_exporter:
+    image: nginx/nginx-prometheus-exporter
+    environment:
+      - NGINX_SCRAPE_URI="http://localhost:8080/stub_status"
+      - NGINX_EXPORTER_TELEMETRY_PATH=/stub_status
+    networks:
+      - my-network
+    depends_on:
+      - prometheus
 
   postgres_exporter:
     image: wrouesnel/postgres_exporter:latest
