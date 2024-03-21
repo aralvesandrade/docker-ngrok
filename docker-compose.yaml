@@ -115,6 +115,7 @@ services:
   nginx_exporter:
     image: nginx/nginx-prometheus-exporter:1.0
     container_name: nginx_exporter
+    restart: unless-stopped
     command:
       - -nginx.scrape-uri=https://nginx/stub_status
     networks:
