@@ -27,6 +27,8 @@ services:
     volumes:
       - postgres:/var/lib/postgresql
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
     networks:
       - my-network
     healthcheck:
