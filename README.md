@@ -1,9 +1,15 @@
-Iniciar containers usando comando `docker-compose`
+Criar rede
 
 ```
-docker-compose up
+docker network create my-network
+```
+
+Iniciar containers usando comando `docker compose`
+
+```
+docker compose up
 #ou
-docker-compose up -d
+docker compose up -d
 ```
 
 Configurar o ngrok
@@ -30,10 +36,21 @@ Instalando o ngrok como um serviço do Linux
 sudo ngrok service install --config ngrok/ngrok.yaml
 ```
 
-Finalizar containers usando comando `docker-compose`
+Finalizar containers usando comando `docker compose`
 
 ```
-docker-compose down
+docker compose down
 #ou
-docker-compose down --volumes
+docker compose down --volumes
+```
+
+Atualizar nginx, caso o arquivo seja alterado, executar o comando
+
+```
+docker exec -it nginx bash
+apk update && apk add --no-cache nano
+nano /etc/nginx/conf.d/nginx.conf
+nginx -t && nginx -s reload
+#ou
+docker exec -it nginx /bin/sh -c "nginx -t && nginx -s reload"
 ```
