@@ -54,3 +54,17 @@ nginx -t && nginx -s reload
 #ou
 docker exec -it nginx /bin/sh -c "nginx -t && nginx -s reload"
 ```
+
+Nginx (http://localhost:8080/)
+
+Grafana
+
+Entrar com o usuário `admin` e senha `admin123`
+
+Criar conexão Data sources > Prometheus, configurar URL: `http://prometheus:9090`
+
+Para monitorar o Linux precisa importar dashboard `1860` (https://grafana.com/grafana/dashboards/1860-node-exporter-full/)
+
+Sonarqube
+
+Entrar com o usuário `admin` e senha `admin`, será solicitado uma atualização de senha.
