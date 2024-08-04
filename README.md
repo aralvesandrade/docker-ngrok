@@ -63,7 +63,11 @@ Entrar com o usuário `admin` e senha `admin123`
 
 Criar conexão Data sources > Prometheus, configurar URL: `http://prometheus:9090`
 
-Para monitorar o Linux precisa importar dashboard `1860` (https://grafana.com/grafana/dashboards/1860-node-exporter-full/)
+Para monitorar o Linux precisa importar o dashboard `1860`(https://grafana.com/grafana/dashboards/1860-node-exporter-full/)
+
+Para monitorar os containers do Docker precisa importar o dashboard `14282`(https://grafana.com/grafana/dashboards/14282-cadvisor-exporter/)
+
+Para monitorar o Postgres precisa importar o dashboard `9628`(https://grafana.com/grafana/dashboards/9628-postgresql-database/)
 
 Sonarqube
 
